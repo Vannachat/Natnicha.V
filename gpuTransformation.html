@@ -76,12 +76,37 @@
         plane.receiveShadow = true; // ✅ พื้นรับเงา
         scene.add(plane);
 
+        // ✅ ค่าความเร็วในการเคลื่อนที่
+        const moveSpeed = 0.1;
+
+        // ✅ ตรวจจับการกดปุ่ม
+        window.addEventListener('keydown', (event) => {
+            switch (event.key.toLowerCase()) {
+                case 'w': // เดินหน้า (เพิ่ม y)
+                    cube.position.z -= moveSpeed;
+                    break;
+                case 's': // ถอยหลัง
+                    cube.position.z += moveSpeed;
+                    break;
+                case 'a': // ซ้าย
+                    cube.position.x -= moveSpeed;
+                    break;
+                case 'd': // ขวา
+                    cube.position.x += moveSpeed;
+                    break;
+            }
+        });
+
+
         // ✅ render loop
         function animate(t) {
             cube.rotation.x = t * 0.001;
             cube.rotation.y = t * 0.001;
 
             sphere.rotation.y = t * 0.001;
+
+            // ✅ กล้องมองตามกล่อง
+            camera.lookAt(cube.position);
 
             renderer.render(scene, camera);
             requestAnimationFrame(animate);
