@@ -67,6 +67,7 @@
         const bedMaterial = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
         const bed = new THREE.Mesh(bed_geometry, bedMaterial);
         bed.position.set(0, 0.5, 0);
+        bed.scale.set(2, 2, 2);
         bed.castShadow = true; // ✅ กล่องส่งเงา
         scene.add(bed);
 
