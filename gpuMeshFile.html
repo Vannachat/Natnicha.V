@@ -81,6 +81,19 @@
             console.error('Error loading OBJ:', error);
         });
 
+        // ✅ โหลดโมเดลเก้าอี้
+        loader.load('https://vannachat.github.io/Natnicha.V/chair.obj', function (chair) {
+            chair.traverse(function (child) {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+            chair.position.set(2, 0, 0); // วางไว้ข้างๆ
+            chair.scale.set(0.8, 0.8, 0.8); // ปรับขนาดหากใหญ่เกิน
+            scene.add(chair);
+        });
+
 
         // ✅ render loop
         function animate(t) {
