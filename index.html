@@ -27,39 +27,35 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // เพิ่ม OrbitControls
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
 
-    // แสง
     const light1 = new THREE.DirectionalLight(0xffffff, 1);
     light1.position.set(1, 1, 1).normalize();
     scene.add(light1);
 
-    const ambientLight = new THREE.AmbientLight(0x404040); // light เล็กน้อยรอบทิศ
+    const ambientLight = new THREE.AmbientLight(0x404040);
     scene.add(ambientLight);
 
-    // โหลดโมเดล
+    // โหลด model.obj (ที่อยู่ใน root เดียวกันกับ index.html)
     const loader = new THREE.OBJLoader();
     loader.load('model.obj', function (object) {
-        object.scale.set(0.5, 0.5, 0.5);  // ปรับขนาด
-        object.position.y = -50;         // ขยับให้ดูดี
+        object.scale.set(0.5, 0.5, 0.5);
+        object.position.y = -50;
         scene.add(object);
     }, undefined, function (error) {
         console.error('Error loading model:', error);
     });
 
-    // render loop
     function animate() {
       requestAnimationFrame(animate);
-      controls.update(); // ต้องมีถ้า enableDamping
+      controls.update();
       renderer.render(scene, camera);
     }
 
     animate();
 
-    // Responsive
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
