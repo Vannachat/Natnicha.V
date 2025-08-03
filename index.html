@@ -40,7 +40,7 @@
 
     // โหลด model.obj (ที่อยู่ใน root เดียวกันกับ index.html)
     const loader = new THREE.OBJLoader();
-    loader.load('model.obj', function (object) {
+    loader.load('https://sibsansuk.github.io/myModel.obj', function (object) {
         object.scale.set(0.5, 0.5, 0.5);
         object.position.y = -50;
         scene.add(object);
