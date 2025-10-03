@@ -58,7 +58,7 @@
         // Load GLB (เรียกจากไฟล์เดียวกันกับ pj.html)
         const loader = new THREE.GLTFLoader();
         loader.load(
-            './pj2.glb',
+            './pj.glb',
             function (gltf) {
                 gltf.scene.traverse(function (child) {
                     if (child.isMesh) {
