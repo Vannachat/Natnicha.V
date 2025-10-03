@@ -57,31 +57,30 @@
 
         // Load GLB (เรียกจากไฟล์เดียวกันกับ pj.html)
         const loader = new THREE.GLTFLoader();
-        loader.load(
-            './pj.glb',
-            function (gltf) {
-                gltf.scene.traverse(function (child) {
-                    if (child.isMesh) {
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-                    }
-                });
-                gltf.scene.scale.set(1, 1, 1);
-                gltf.scene.position.set(0, 0, 0);
-                gltf.scene.rotation.y = Math.PI;
+loader.load(
+    'https://vannachat.github.io/Natnicha.V/pj.glb',
+    function (gltf) {
+        gltf.scene.traverse(function (child) {
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+            }
+        });
+        gltf.scene.scale.set(1, 1, 1);
+        gltf.scene.position.set(0, 0, 0);
+        gltf.scene.rotation.y = Math.PI;
 
-                // center กล้องไปที่โมเดล
-                const box = new THREE.Box3().setFromObject(gltf.scene);
-                const center = box.getCenter(new THREE.Vector3());
-                controls.target.copy(center);
-                camera.lookAt(center);
+        const box = new THREE.Box3().setFromObject(gltf.scene);
+        const center = box.getCenter(new THREE.Vector3());
+        controls.target.copy(center);
+        camera.lookAt(center);
 
-                scene.add(gltf.scene);
-                console.log('✅ GLB loaded!');
-            },
-            (xhr) => console.log(`Loading: ${(xhr.loaded / xhr.total * 100).toFixed(2)}%`),
-            (error) => console.error('❌ GLB load error:', error)
-        );
+        scene.add(gltf.scene);
+        console.log('✅ GLB loaded!');
+    },
+    undefined,
+    (error) => console.error('❌ GLB load error:', error)
+);
 
         // dat.GUI controls
         const gui = new dat.GUI();
