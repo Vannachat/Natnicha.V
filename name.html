@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile Scene ✨</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: radial-gradient(circle, #000 0%, #0b0017 100%);
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    /* ปุ่มกลับ */
+    #backBtn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid #fff;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+      z-index: 10;
+    }
+
+    #backBtn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* ปุ่มเครดิตโมเดล */
+    #creditBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid #fff;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      text-shadow: 0 0 8px #d6b0ff;
+      transition: 0.3s;
+      z-index: 11;
+    }
+
+    #creditBtn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      text-shadow: 0 0 12px #fff;
+    }
+
+    /* Popup เครดิต */
+    #creditPopup {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      background: rgba(20, 0, 40, 0.9);
+      border: 1px solid #a882ff;
+      border-radius: 10px;
+      padding: 15px 20px;
+      color: #fff;
+      font-size: 14px;
+      box-shadow: 0 0 12px #a882ff;
+      display: none;
+      z-index: 20;
+      animation: fadeIn 0.3s ease;
+      width: 280px;
+    }
+
+    #creditPopup h3 {
+      margin-top: 0;
+      font-size: 16px;
+      color: #d6b0ff;
+      text-align: center;
+    }
+
+    #creditPopup a {
+      color: #d6b0ff;
+      text-decoration: none;
+      word-wrap: break-word;
+    }
+
+    #creditPopup a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+</head>
+<body>
+  <!-- ปุ่มกลับ -->
+  <div id="backBtn" onclick="window.location.href='./Tarot.html'">← กลับ</div>
+
+  <!-- ปุ่มเครดิตโมเดล -->
+  <div id="creditBtn" onclick="toggleCredit()">⚙️ เครดิตโมเดล</div>
+
+  <!-- Popup เครดิต -->
+  <div id="creditPopup">
+    <h3>เครดิตโมเดล ✨</h3>
+    <p><a href="https://sketchfab.com/3d-models/three-of-swords-334ceda969d44dc09aa6583af51d3757?fbclid=IwY2xjawNfY6lleHRuA2FlbQIxMABicmlkETFWeWpQY0dXOHlST3V1VVl1AR4nFHe9rSsEqHPypemqXFitoP2TDcbw0AwMApM6ZdojJ8ajxBUrKM0cPRTLhg_aem_xLX_3tf3gwLy6BZn1lPmEA" target="_blank">🗡️ Three of Swords – โมเดลจาก Sketchfab</a></p>
+    <p><a href="https://sketchfab.com/3d-models/tarottable-diorama-407343da4e994dbd97c9be38fc2d5f4e?fbclid=IwY2xjawNfY8tleHRuA2FlbQIxMABicmlkETFWeWpQY0dXOHlST3V1VVl1AR4HWWNp8rBajnTZmqi0MmxVar4rClioB51__oiDHTXpks14CYCCdRZQLo_qpw_aem_bCVHfbURl3u6xXfGu0Fgxw" target="_blank">🔮 Tarot Table Diorama – โมเดลจาก Sketchfab</a></p>
+  </div>
+
+  <script>
+    // 🔮 Scene
+    const scene = new THREE.Scene();
+
+    // 🌌 พื้นหลังธีมเมจิกสีม่วง
+    const texLoader = new THREE.TextureLoader();
+    texLoader.load("./bg.png", (texture) => {
+      scene.background = texture;
+    }, undefined, (err) => {
+      console.warn("⚠️ โหลดภาพพื้นหลังไม่สำเร็จ:", err);
+    });
+
+    // 📷 กล้อง
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 5000);
+    camera.position.set(0, 120, 300);
+
+    // 🪄 Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+
+    // 🎮 Controls
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.target.set(0, 80, 0);
+
+    // 💡 แสงหลัก (4 ดวง)
+    const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+    scene.add(ambient);
+
+    const keyLight = new THREE.SpotLight(0xfff6cc, 1.5);
+    keyLight.position.set(300, 400, 200);
+    keyLight.castShadow = true;
+    keyLight.angle = Math.PI / 4;
+    keyLight.penumbra = 0.4;
+    scene.add(keyLight);
+
+    const fillLight = new THREE.PointLight(0x99ccff, 0.8);
+    fillLight.position.set(-300, 150, 100);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.PointLight(0xff9966, 1.2);
+    rimLight.position.set(0, 200, -250);
+    scene.add(rimLight);
+
+    const topLight = new THREE.SpotLight(0xffffff, 0.8);
+    topLight.position.set(0, 400, 0);
+    topLight.angle = Math.PI / 3;
+    topLight.penumbra = 0.5;
+    scene.add(topLight);
+
+    // 🧩 โหลดโมเดลชื่อ
+    const loader = new THREE.GLTFLoader();
+    loader.load("./name2.glb", function (gltf) {
+      const nameModel = gltf.scene;
+      nameModel.scale.set(100, 100, 100);
+      nameModel.position.set(0, 0, 0);
+      nameModel.traverse(obj => {
+        if (obj.isMesh) {
+          obj.castShadow = true;
+          obj.receiveShadow = true;
+        }
+      });
+      scene.add(nameModel);
+    });
+
+    // 🖼️ โหลดรูปภาพโปรไฟล์
+    const imageLoader = new THREE.TextureLoader();
+    imageLoader.load("./me.jpg", (texture) => {
+      const geometry = new THREE.PlaneGeometry(600, 400);
+      const material = new THREE.MeshStandardMaterial({
+        map: texture,
+        side: THREE.DoubleSide,
+        metalness: 0.2,
+        roughness: 0.8
+      });
+
+      const photoPlane = new THREE.Mesh(geometry, material);
+      photoPlane.position.set(-260, 30, 0);
+      photoPlane.castShadow = true;
+      photoPlane.receiveShadow = true;
+      scene.add(photoPlane);
+    });
+
+    // 🔁 Animation Loop
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // 📏 Resize
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // ⚙️ แสดง/ซ่อน Popup เครดิต
+    function toggleCredit() {
+      const popup = document.getElementById("creditPopup");
+      popup.style.display = (popup.style.display === "block") ? "none" : "block";
+    }
+  </script>
+</body>
+</html>
+
+
