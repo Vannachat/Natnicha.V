@@ -16,7 +16,6 @@
     }
   </style>
 
-  <!-- Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -27,13 +26,13 @@
   <script>
     const scene = new THREE.Scene();
 
-    //โหลดภาพพื้นหลัง
+    //พื้นหลัง
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load("./bg.png", (texture) => {
       scene.background = texture;
     });
 
-    //Camera
+    //กล้อง
     const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
     camera.position.set(0, 190, 650);
     camera.lookAt(0, 100, 0);
@@ -42,7 +41,6 @@
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     document.body.appendChild(renderer.domElement);
 
     //Controls
@@ -53,7 +51,7 @@
     controls.minDistance = 300;
     controls.maxDistance = 1000;
 
-    //แสงหลัก
+    //แสง
     const ambient = new THREE.AmbientLight(0xffffff, 0.5);
     const keyLight = new THREE.SpotLight(0xfff6d9, 1.5);
     keyLight.position.set(250, 400, 200);
@@ -67,26 +65,25 @@
     scene.add(ambient, keyLight, fillLight, rimLight);
 
     const loader = new THREE.GLTFLoader();
-    let profileText = null;
-    let randomButton = null;
+    let profileText = null, randomButton = null, ghostModel = null;
 
-    //โหลดโมเดลโต๊ะ
-    loader.load("./random1.glb", function (gltf) {
+    // โต๊ะ
+    loader.load("./random1.glb", (gltf) => {
       const model = gltf.scene;
       model.scale.set(100, 100, 100);
       scene.add(model);
     });
 
-    //โหลดโมเดลข้อความ "โปรไฟล์"
-    loader.load("./T_5.glb", function (gltf) {
+    // โปรไฟล์
+    loader.load("./T_5.glb", (gltf) => {
       profileText = gltf.scene;
       profileText.scale.set(80, 80, 80);
       profileText.position.set(20, 6, 0);
       scene.add(profileText);
     });
 
-    //โหลดโมเดลข้อความ "เริ่มสุ่ม"
-    loader.load("./TR_3.glb", function (gltf) {
+    // เริ่มสุ่ม
+    loader.load("./TR_3.glb", (gltf) => {
       randomButton = gltf.scene;
       randomButton.scale.set(80, 80, 80);
       randomButton.position.set(-250, -80, 0);
@@ -99,67 +96,79 @@
       document.getElementById("loading").style.display = "none";
     });
 
-    //เอฟเฟกต์ฝุ่น
+    //โหลดโมเดลผี
+    loader.load("./ghost.glb", (gltf) => {
+      ghostModel = gltf.scene;
+      ghostModel.scale.set(40, 40, 40);
+      ghostModel.position.set(0, 160, -300);
+      scene.add(ghostModel);
+
+      // แสงฟ้ารอบผี
+      const ghostLight = new THREE.PointLight(0x88ccff, 2, 400);
+      ghostLight.position.set(0, 160, -300);
+      scene.add(ghostLight);
+
+      ghostModel.userData.light = ghostLight; // ผูกไฟไว้กับผี
+    });
+
+    //ฝุ่นลอย
     const particleCount = 450;
     const particlesGeometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount * 3; i++) {
-      positions[i] = (Math.random() - 0.5) * 2000;
-    }
-
+    for (let i = 0; i < particleCount * 3; i++) positions[i] = (Math.random() - 0.5) * 2000;
     particlesGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
     const particlesMaterial = new THREE.PointsMaterial({
-      color: 0xffdd99, 
+      color: 0xffdd99,
       size: 4,
-      sizeAttenuation: true,
       transparent: true,
       opacity: 0.6,
       blending: THREE.AdditiveBlending
     });
 
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particles);
     particlesMaterial.depthWrite = false;
+    scene.add(particles);
 
     //เอฟเฟกต์เคลื่อนไหว
-    function animateParticles() {
+    let ghostAngle = 0;
+    function animateParticlesAndGhost() {
       const t = Date.now() * 0.0002;
       particles.rotation.y = t * 0.3;
       particles.rotation.x = Math.sin(t * 0.1) * 0.15;
+
+      //ผีลอยหมุนรอบโต๊ะ
+      if (ghostModel) {
+        ghostAngle += 0.005;
+        const radius = 300;
+        ghostModel.position.x = Math.cos(ghostAngle) * radius;
+        ghostModel.position.z = Math.sin(ghostAngle) * radius - 100;
+        ghostModel.position.y = 150 + Math.sin(t * 2) * 30; // ลอยขึ้นลงเบา ๆ
+
+        // แสงเคลื่อนไหวตามผี
+        ghostModel.userData.light.position.copy(ghostModel.position);
+      }
     }
 
     //ตรวจจับคลิก
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-
     window.addEventListener("click", (event) => {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(mouse, camera);
 
-      if (profileText) {
-        const hitProfile = raycaster.intersectObject(profileText, true);
-        if (hitProfile.length > 0) {
-          console.log("✅ Click โปรไฟล์ -> name.html");
-          window.location.href = "./name.html";
-        }
-      }
+      if (profileText && raycaster.intersectObject(profileText, true).length > 0)
+        window.location.href = "./name.html";
 
-      if (randomButton) {
-        const hitRandom = raycaster.intersectObject(randomButton, true);
-        if (hitRandom.length > 0) {
-          console.log("🎴 Click เริ่มสุ่ม -> random.html");
-          window.location.href = "./random.html";
-        }
-      }
+      if (randomButton && raycaster.intersectObject(randomButton, true).length > 0)
+        window.location.href = "./random.html";
     });
 
     //Loop
     function animate() {
       requestAnimationFrame(animate);
-      animateParticles(); // 🌟 เพิ่มเอฟเฟกต์ฝุ่น
+      animateParticlesAndGhost();
       controls.update();
       renderer.render(scene, camera);
     }
@@ -174,4 +183,6 @@
   </script>
 </body>
 </html>
+
+
 
