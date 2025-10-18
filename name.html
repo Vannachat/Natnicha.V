@@ -114,10 +114,10 @@
   </div>
 
   <script>
-    // 🔮 Scene
+    //  Scene
     const scene = new THREE.Scene();
 
-    // 🌌 พื้นหลังธีมเมจิกสีม่วง
+    // พื้นหลัง
     const texLoader = new THREE.TextureLoader();
     texLoader.load("./bg.png", (texture) => {
       scene.background = texture;
@@ -125,23 +125,23 @@
       console.warn("⚠️ โหลดภาพพื้นหลังไม่สำเร็จ:", err);
     });
 
-    // 📷 กล้อง
+    // กล้อง
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 5000);
     camera.position.set(0, 120, 300);
 
-    // 🪄 Renderer
+    //Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     document.body.appendChild(renderer.domElement);
 
-    // 🎮 Controls
+    //Controls
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.target.set(0, 80, 0);
 
-    // 💡 แสงหลัก (4 ดวง)
+    //แสงหลัก (4 ดวง)
     const ambient = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambient);
 
@@ -166,7 +166,7 @@
     topLight.penumbra = 0.5;
     scene.add(topLight);
 
-    // 🧩 โหลดโมเดลชื่อ
+    //โหลดโมเดลชื่อ
     const loader = new THREE.GLTFLoader();
     loader.load("./name5.glb", function (gltf) {
       const nameModel = gltf.scene;
@@ -181,7 +181,7 @@
       scene.add(nameModel);
     });
 
-    // 🖼️ โหลดรูปภาพโปรไฟล์
+    //โหลดรูปภาพโปรไฟล์
     const imageLoader = new THREE.TextureLoader();
     imageLoader.load("./me.jpg", (texture) => {
       const geometry = new THREE.PlaneGeometry(600, 400);
@@ -199,7 +199,7 @@
       scene.add(photoPlane);
     });
 
-    // 🔁 Animation Loop
+    //Animation Loop
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
@@ -207,14 +207,14 @@
     }
     animate();
 
-    // 📏 Resize
+    // Resize
     window.addEventListener("resize", () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // ⚙️ แสดง/ซ่อน Popup เครดิต
+    // Popup เครดิต
     function toggleCredit() {
       const popup = document.getElementById("creditPopup");
       popup.style.display = (popup.style.display === "block") ? "none" : "block";
@@ -222,5 +222,6 @@
   </script>
 </body>
 </html>
+
 
 
