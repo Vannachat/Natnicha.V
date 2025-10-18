@@ -27,12 +27,10 @@
   <script>
     const scene = new THREE.Scene();
 
-    //โหลดภาพพื้นหลัง 
+    //โหลดภาพพื้นหลัง
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load("./bg.png", (texture) => {
       scene.background = texture;
-    }, undefined, (error) => {
-      console.warn("⚠️ โหลดภาพพื้นหลังไม่สำเร็จ:", error);
     });
 
     //Camera
@@ -91,10 +89,9 @@
     loader.load("./TR_3.glb", function (gltf) {
       randomButton = gltf.scene;
       randomButton.scale.set(80, 80, 80);
-      randomButton.position.set(-250, -80, 0); // ใต้คำว่าโปรไฟล์
+      randomButton.position.set(-250, -80, 0);
       scene.add(randomButton);
 
-      // เพิ่มแสงส่องปุ่มสุ่ม
       const randomLight = new THREE.PointLight(0x88ccff, 1.2, 250);
       randomLight.position.set(250, 50, 100);
       scene.add(randomLight);
@@ -102,7 +99,38 @@
       document.getElementById("loading").style.display = "none";
     });
 
-    // ตรวจจับคลิก
+    //เอฟเฟกต์ฝุ่น
+    const particleCount = 450;
+    const particlesGeometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount * 3; i++) {
+      positions[i] = (Math.random() - 0.5) * 2000;
+    }
+
+    particlesGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+    const particlesMaterial = new THREE.PointsMaterial({
+      color: 0xffdd99, 
+      size: 4,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending
+    });
+
+    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particles);
+    particlesMaterial.depthWrite = false;
+
+    //เอฟเฟกต์เคลื่อนไหว
+    function animateParticles() {
+      const t = Date.now() * 0.0002;
+      particles.rotation.y = t * 0.3;
+      particles.rotation.x = Math.sin(t * 0.1) * 0.15;
+    }
+
+    //ตรวจจับคลิก
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
@@ -128,14 +156,16 @@
       }
     });
 
-    // Loop
+    //Loop
     function animate() {
       requestAnimationFrame(animate);
+      animateParticles(); // 🌟 เพิ่มเอฟเฟกต์ฝุ่น
       controls.update();
       renderer.render(scene, camera);
     }
     animate();
 
+    //Resize
     window.addEventListener("resize", () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
