@@ -27,7 +27,7 @@
   <script>
     const scene = new THREE.Scene();
 
-    // 🌌 โหลดภาพพื้นหลัง (วางไฟล์ bg.jpg หรือ bg.png ในโฟลเดอร์เดียวกับไฟล์นี้)
+    //โหลดภาพพื้นหลัง 
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load("./bg.png", (texture) => {
       scene.background = texture;
@@ -35,19 +35,19 @@
       console.warn("⚠️ โหลดภาพพื้นหลังไม่สำเร็จ:", error);
     });
 
-    // 📷 Camera
+    //Camera
     const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
     camera.position.set(0, 190, 650);
     camera.lookAt(0, 100, 0);
 
-    // 🎥 Renderer
+    //Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     document.body.appendChild(renderer.domElement);
 
-    // 🎮 Controls
+    //Controls
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 100, 0);
     controls.enableDamping = true;
@@ -55,7 +55,7 @@
     controls.minDistance = 300;
     controls.maxDistance = 1000;
 
-    // 💡 แสงหลัก
+    //แสงหลัก
     const ambient = new THREE.AmbientLight(0xffffff, 0.5);
     const keyLight = new THREE.SpotLight(0xfff6d9, 1.5);
     keyLight.position.set(250, 400, 200);
@@ -72,14 +72,14 @@
     let profileText = null;
     let randomButton = null;
 
-    // 🔮 โหลดโมเดลโต๊ะ
+    //โหลดโมเดลโต๊ะ
     loader.load("./random1.glb", function (gltf) {
       const model = gltf.scene;
       model.scale.set(100, 100, 100);
       scene.add(model);
     });
 
-    // 🪄 โหลดโมเดลข้อความ "โปรไฟล์"
+    //โหลดโมเดลข้อความ "โปรไฟล์"
     loader.load("./T_5.glb", function (gltf) {
       profileText = gltf.scene;
       profileText.scale.set(80, 80, 80);
@@ -87,7 +87,7 @@
       scene.add(profileText);
     });
 
-    // ✨ โหลดโมเดลข้อความ "เริ่มสุ่ม"
+    //โหลดโมเดลข้อความ "เริ่มสุ่ม"
     loader.load("./TR_3.glb", function (gltf) {
       randomButton = gltf.scene;
       randomButton.scale.set(80, 80, 80);
@@ -102,7 +102,7 @@
       document.getElementById("loading").style.display = "none";
     });
 
-    // 🖱️ ตรวจจับคลิก
+    // ตรวจจับคลิก
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
@@ -128,7 +128,7 @@
       }
     });
 
-    // 🔁 Loop
+    // Loop
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
@@ -144,3 +144,4 @@
   </script>
 </body>
 </html>
+
