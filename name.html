@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Profile Scene ✨</title>
@@ -35,13 +36,13 @@
       position: fixed;
       bottom: 20px;
       right: 20px;
-      padding: 10px 18px;
+      padding: 16px 26px;
       background: rgba(255, 255, 255, 0.15);
-      border: 1px solid #fff;
+      border: 2px solid #fff;
       border-radius: 8px;
       color: #fff;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 17px;
       text-shadow: 0 0 8px #d6b0ff;
       transition: 0.3s;
       z-index: 11;
@@ -50,6 +51,7 @@
     #creditBtn:hover {
       background: rgba(255, 255, 255, 0.3);
       text-shadow: 0 0 12px #fff;
+      transform: scale(1.05);
     }
 
     /* Popup เครดิต */
@@ -89,8 +91,76 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /*ปุ่มผลงานอื่นๆ */
+    #projectBtn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 26px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid #fff;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 17px;
+      font-weight: 600;
+      text-shadow: 0 0 10px #d6b0ff;
+      box-shadow: 0 0 12px rgba(214, 176, 255, 0.4);
+      transition: 0.3s;
+      z-index: 11;
+    }
+
+    #projectBtn:hover {
+      background: rgba(255, 255, 255, 0.4);
+      text-shadow: 0 0 14px #fff;
+      transform: scale(1.05);
+    }
+
+    /* Popup ผลงาน */
+    #projectPopup {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: rgba(20, 0, 40, 0.9);
+      border: 1px solid #a882ff;
+      border-radius: 10px;
+      padding: 15px 20px;
+      color: #fff;
+      font-size: 14px;
+      box-shadow: 0 0 12px #a882ff;
+      display: none;
+      z-index: 20;
+      animation: fadeIn 0.3s ease;
+      width: 260px;
+    }
+
+    #projectPopup h3 {
+      margin-top: 0;
+      font-size: 16px;
+      color: #d6b0ff;
+      text-align: center;
+    }
+
+    #projectPopup a {
+      color: #d6b0ff;
+      text-decoration: none;
+      word-wrap: break-word;
+    }
+
+    #projectPopup a:hover {
+      color: #fff;
+      text-decoration: underline;
     }
   </style>
 
@@ -99,9 +169,13 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
+
 <body>
   <!-- ปุ่มกลับ -->
   <div id="backBtn" onclick="window.location.href='./Tarot.html'">← กลับ</div>
+
+  <!-- 🌟 ปุ่มผลงานอื่นๆ -->
+  <div id="projectBtn" onclick="toggleProjects()">🌟 ผลงานอื่นๆ</div>
 
   <!-- ปุ่มเครดิตโมเดล -->
   <div id="creditBtn" onclick="toggleCredit()">⚙️ เครดิตโมเดล</div>
@@ -109,9 +183,21 @@
   <!-- Popup เครดิต -->
   <div id="creditPopup">
     <h3>เครดิตโมเดล ✨</h3>
-    <p><a href="https://sketchfab.com/3d-models/three-of-swords-334ceda969d44dc09aa6583af51d3757?fbclid=IwY2xjawNfY6lleHRuA2FlbQIxMABicmlkETFWeWpQY0dXOHlST3V1VVl1AR4nFHe9rSsEqHPypemqXFitoP2TDcbw0AwMApM6ZdojJ8ajxBUrKM0cPRTLhg_aem_xLX_3tf3gwLy6BZn1lPmEA" target="_blank">🗡️ Three of Swords – โมเดลจาก Sketchfab</a></p>
-    <p><a href="https://sketchfab.com/3d-models/tarottable-diorama-407343da4e994dbd97c9be38fc2d5f4e?fbclid=IwY2xjawNfY8tleHRuA2FlbQIxMABicmlkETFWeWpQY0dXOHlST3V1VVl1AR4HWWNp8rBajnTZmqi0MmxVar4rClioB51__oiDHTXpks14CYCCdRZQLo_qpw_aem_bCVHfbURl3u6xXfGu0Fgxw" target="_blank">🔮 Tarot Table Diorama – โมเดลจาก Sketchfab</a></p>
-    <p><a href="https://sketchfab.com/3d-models/cute-ghost-f1034266c2164d0eb0d0a6fe02ebf7d8?fbclidIwY2xjawNggblleHRuA2FlbQIxMABicmlkETFjaVNTcExsb0RBWm5yMEF5AR45JkyJOIAoGn4NvGIBxyvm9eIVUa3-qxAaKYUQY89kwajSQI_4YRlWbG3cqw_aem_SgErwkTz9K4Rio_etaVPaA "target="_blank">👻 Cute ghost – โมเดลจาก Sketchfab</a></p>
+    <p><a href="https://sketchfab.com/3d-models/three-of-swords-334ceda969d44dc09aa6583af51d3757" target="_blank">🗡️
+        Three of Swords – Sketchfab</a></p>
+    <p><a href="https://sketchfab.com/3d-models/tarottable-diorama-407343da4e994dbd97c9be38fc2d5f4e" target="_blank">🔮
+        Tarot Table Diorama – Sketchfab</a></p>
+    <p><a href="https://sketchfab.com/3d-models/cute-ghost-f1034266c2164d0eb0d0a6fe02ebf7d8" target="_blank">👻 Cute
+        Ghost – Sketchfab</a></p>
+  </div>
+
+  <!-- Popup ผลงาน -->
+  <div id="projectPopup">
+    <h3>🌟 ผลงานอื่นๆ</h3>
+    <p><a href="https://vannachat.github.io/Natnicha.V/Fishposition.html" target="_blank">🐟 Fish Position Project</a>
+    </p>
+    <p><a href="https://vannachat.github.io/Natnicha.V/TurboModel.html" target="_blank">⚙️ Turbo Model Project</a></p>
+     <p><a href="https://vannachat.github.io/Natnicha.V/Cell_shader.html" target="_blank">🌀 Cell Shader Project</a></p>
   </div>
 
   <script>
@@ -142,7 +228,7 @@
     controls.enableDamping = true;
     controls.target.set(0, 80, 0);
 
-    //แสงหลัก (4 ดวง)
+    //แสงหลัก
     const ambient = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambient);
 
@@ -220,15 +306,13 @@
       const popup = document.getElementById("creditPopup");
       popup.style.display = (popup.style.display === "block") ? "none" : "block";
     }
+
+    // Popup ผลงานอื่นๆ
+    function toggleProjects() {
+      const popup = document.getElementById("projectPopup");
+      popup.style.display = (popup.style.display === "block") ? "none" : "block";
+    }
   </script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
