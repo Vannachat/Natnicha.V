@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Tarot Reading 🔮</title>
@@ -24,7 +25,10 @@
       transition: 0.3s;
       z-index: 10;
     }
-    #backBtn:hover { background: rgba(255, 255, 255, 0.3); }
+
+    #backBtn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
 
     #title {
       position: fixed;
@@ -38,7 +42,6 @@
       z-index: 10;
     }
 
-    /* คำทำนาย */
     .fortune {
       position: fixed;
       width: 100%;
@@ -54,10 +57,20 @@
       bottom: 120px;
     }
 
-    /* แยกตำแหน่งข้อความใต้ไพ่แต่ละใบ */
-    #fortune1 { left: 20%; transform: translateX(-50%); }
-    #fortune2 { left: 50%; transform: translateX(-50%); }
-    #fortune3 { left: 80%; transform: translateX(-50%); }
+    #fortune1 {
+      left: 20%;
+      transform: translateX(-50%);
+    }
+
+    #fortune2 {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #fortune3 {
+      left: 80%;
+      transform: translateX(-50%);
+    }
   </style>
 
   <!-- Three.js -->
@@ -65,19 +78,25 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
+
 <body>
   <div id="backBtn" onclick="window.location.href='./Tarot.html'">← กลับ</div>
   <div id="title">✨ เลือกไพ่ดีๆ น้า ✨</div>
 
-  <!-- 🃏 ข้อความเฉพาะของแต่ละไพ่ -->
-  <div id="fortune1" class="fortune">💫 ไพ่ใบที่ 1 ทำนายว่า...ควรเปลี่ยนแปรงสีฟันบ่อยๆ 3 เดือนต่อ 1 อัน <br>และไม่ควรลงเล่นน้ำคลองในใจกลางกรุงเทพฯ เป็นอันขาด</div>
-  <div id="fortune2" class="fortune">💫 ไพ่ใบที่ 2 ว่าไว้... ถ้าอากาศร้อนไม่ควรใส่เสื้อหนาว ถ้าอากาศเย็นไม่ควรดื่มน้ำแข็ง <br>เมื่อเห็นพัดลมกำลังหมุนอย่าเอามือเข้าไปแหย่ มิฉะนั้นเลือดจะออกได้ </div>
-  <div id="fortune3" class="fortune">💫 ไพ่ใบที่ 3 ดาวพลูโตอยู่ห่างสุดตื่นขึ้นมาควรแก้เคล็ดด้วย <br>การบิดขี้เกียจ และล้างหน้าแปรงฟันแก้ปากเหม็น </div>
+  <!--คำทำนาย -->
+  <div id="fortune1" class="fortune">💫 ไพ่ใบที่ 1 ทำนายว่า...ควรเปลี่ยนแปรงสีฟันบ่อยๆ 3 เดือนต่อ 1 อัน
+    <br>และไม่ควรลงเล่นน้ำคลองในใจกลางกรุงเทพฯ เป็นอันขาด
+  </div>
+  <div id="fortune2" class="fortune">💫 ไพ่ใบที่ 2 ว่าไว้... ถ้าอากาศร้อนไม่ควรใส่เสื้อหนาว
+    ถ้าอากาศเย็นไม่ควรดื่มน้ำแข็ง <br>เมื่อเห็นพัดลมกำลังหมุนอย่าเอามือเข้าไปแหย่ มิฉะนั้นเลือดจะออกได้</div>
+  <div id="fortune3" class="fortune">💫 ไพ่ใบที่ 3 ดาวพลูโตอยู่ห่างสุด ตื่นขึ้นมาควรแก้เคล็ดด้วย
+    <br>การบิดขี้เกียจ และล้างหน้าแปรงฟันแก้ปากเหม็น
+  </div>
 
   <script>
     const scene = new THREE.Scene();
 
-    // พื้นหลัง
+    //พื้นหลัง
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load("./bg.png", tex => scene.background = tex);
 
@@ -116,61 +135,88 @@
       document.getElementById("fortune3")
     ];
 
+    const clock = new THREE.Clock();
+
+    //โหลดไพ่
     cardFiles.forEach((file, i) => {
-      loader.load(file,
-        (gltf) => {
-          const card = gltf.scene;
-          card.scale.set(80, 80, 80);
-          card.position.set((i - 1) * 220, 50, 0); // ซ้าย-กลาง-ขวา
-          card.userData.index = i + 1;
-
-          // ✅ ให้ตรวจจับคลิกได้ทุกชิ้นของโมเดล
-          card.traverse(obj => { if (obj.isMesh) obj.userData.parentIndex = i + 1; });
-
-          scene.add(card);
-          cards.push(card);
-          console.log("✅ โหลดไพ่สำเร็จ:", file);
-        },
-        (xhr) => console.log(`📦 โหลด ${file} ${(xhr.loaded / xhr.total * 100).toFixed(1)}%`),
-        (error) => console.error("❌ โหลดไม่สำเร็จ:", file, error)
-      );
+      loader.load(file, (gltf) => {
+        const card = gltf.scene;
+        card.scale.set(80, 80, 80);
+        card.position.set((i - 1) * 220, 50, 0);
+        card.userData.index = i + 1;
+        card.traverse(obj => { if (obj.isMesh) obj.userData.parentIndex = i + 1; });
+        scene.add(card);
+        cards.push(card);
+      });
     });
 
-    // คลิกไพ่
+    //เอฟเฟกต์ฝุ่น
+    const particleCount = 600;
+    const particleGeometry = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i++)
+      particlePositions[i] = (Math.random() - 0.5) * 2000;
+    particleGeometry.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
+    const particleMaterial = new THREE.PointsMaterial({
+      color: 0xffaaff,
+      size: 4,
+      transparent: true,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending
+    });
+    const particles = new THREE.Points(particleGeometry, particleMaterial);
+    scene.add(particles);
+
+    //หมอกพื้นหลัง
+    const fogTex = textureLoader.load("./bg.png");
+    const fogPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(3000, 2000),
+      new THREE.MeshBasicMaterial({ map: fogTex, transparent: true, opacity: 0.05 })
+    );
+    fogPlane.position.set(0, 200, -600);
+    scene.add(fogPlane);
+
+    //คลิกไพ่
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
+
     window.addEventListener("click", (event) => {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(mouse, camera);
 
-      // รวม children ทั้งหมดให้ raycaster ตรวจ
       const clickable = [];
       cards.forEach(card => card.traverse(obj => { if (obj.isMesh) clickable.push(obj); }));
-
       const intersects = raycaster.intersectObjects(clickable, true);
-      console.log("🧭 ตรวจพบคลิก", intersects.length, "ครั้ง");
 
-      // ซ่อนข้อความทั้งหมดก่อน
       fortunes.forEach(f => { f.style.display = "none"; f.style.opacity = 0; });
 
       if (intersects.length > 0) {
-        const hit = intersects[0].object;
-        const id = hit.userData.parentIndex;
+        const id = intersects[0].object.userData.parentIndex;
         if (!id) return;
-        console.log("🎴 คลิกโดน Card", id);
 
         const f = fortunes[id - 1];
         setTimeout(() => {
           f.style.display = "block";
           setTimeout(() => { f.style.opacity = 1; }, 100);
-        }, 400);
+        }, 300);
       }
     });
 
-    // Loop
+    //Loop
     function animate() {
       requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+
+      //ไพ่ลอยขึ้นลง
+      cards.forEach((card, i) => {
+        card.position.y = 50 + Math.sin(t * 2 + i) * 4;
+      });
+
+      //ฝุ่นหมุน + หมอก
+      particles.rotation.y = t * 0.1;
+      fogPlane.position.z = -600 + Math.sin(t * 0.3) * 50;
+
       controls.update();
       renderer.render(scene, camera);
     }
@@ -184,5 +230,6 @@
     });
   </script>
 </body>
+
 </html>
 
