@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Tarot Table 🔮</title>
   <style>
-    body { margin: 0; overflow: hidden; background: #000; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+    }
 
     /*หน้ากำลังโหลด */
     #loadingOverlay {
@@ -32,8 +37,15 @@
     }
 
     @keyframes pulseText {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.6;
+      }
     }
 
     #progressContainer {
@@ -59,11 +71,14 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
+
 <body>
 
   <div id="loadingOverlay">
     <div id="loadingText">🔮 กำลังเปิดพลังไพ่...</div>
-    <div id="progressContainer"><div id="progressBar"></div></div>
+    <div id="progressContainer">
+      <div id="progressBar"></div>
+    </div>
   </div>
 
   <div id="loading">🔮 Loading...</div>
@@ -152,20 +167,35 @@
       document.getElementById("loading").style.display = "none";
     });
 
-    // ผี
+    // โหลดโมเดลผี
     loader.load("./ghost.glb", (gltf) => {
       ghostModel = gltf.scene;
       ghostModel.scale.set(40, 40, 40);
       ghostModel.position.set(0, 160, -300);
       scene.add(ghostModel);
 
+      //ใส่ Cel Shading 
+      ghostModel.traverse((obj) => {
+        if (obj.isMesh) {
+          obj.material = new THREE.MeshToonMaterial({
+            color: 0x77bbff, 
+            gradientMap: null, 
+          });
+          obj.castShadow = true;
+          obj.receiveShadow = true;
+        }
+      });
+
+      // 
       const ghostLight = new THREE.PointLight(0x88ccff, 2, 400);
       ghostLight.position.set(0, 160, -300);
       scene.add(ghostLight);
       ghostModel.userData.light = ghostLight;
 
-      loadedModels++; updateProgress();
+      loadedModels++;
+      updateProgress();
     });
+
 
     const particleCount = 450;
     const particlesGeometry = new THREE.BufferGeometry();
@@ -225,8 +255,8 @@
     });
   </script>
 </body>
-</html>
 
+</html>
 
 
 
